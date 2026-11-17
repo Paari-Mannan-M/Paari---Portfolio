@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" class="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/jpeg" href="/yokesh_logo.jpg" />
+  <!-- viewport-fit=cover: lets the cinematic stage extend under iOS notches
+       and home indicators so 100svh frames the full screen.
+       maximum-scale=1 + user-scalable=no: pinch-zoom would destroy the
+       pinned ScrollTrigger math (zoom changes effective viewport height
+       mid-pin) and the site is already responsive. -->
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#050505" />
+  <!-- Stops iOS Safari from auto-linking the "+91 85906 94627" string in
+       the hero footer (overrides the manual <a href="tel:..."> we set). -->
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Paari Mannan M | Systems & IoT Engineer</title>
+  <meta name="description"
+    content="Portfolio of Paari Mannan M — Computer Science & Engineering student at LPU specializing in systems programming, C++ & DSA, and IoT embedded solutions." />
+
+  <!-- No <link rel="preload"> for the scroll videos. Chrome's preload
+       matcher doesn't link `as="fetch"` preloads to <video> elements
+       (warns "preloaded but not used") and `as="video"` is non-standard.
+       The real wins — +faststart re-mux, Cache-Control: immutable,
+       Accept-Ranges: bytes, and the video element's own preload="auto" —
+       cover the loading path with no warnings or duplicate fetches. -->
+
+  <!-- Eliminate the white flash before paint. The site is pure-black; the
+       browser's default white background is jarring while the JS bundle
+       parses and the video element appears. -->
+  <style>html, body { background: #000; }</style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+</html>

@@ -1,0 +1,1993 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&display=swap');
+
+@import "tailwindcss";
+
+/* stylelint-disable-next-line at-rule-no-unknown */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ─── Override Tailwind's default font-family theme tokens ─── */
+@theme {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ═══════════════════════════════════════════════
+   THEME TOKENS — Warm Amber / No Blue
+   ═══════════════════════════════════════════════ */
+
+html.light {
+  --bg: hsla(60, 20%, 98%, 1);
+  --bg-alt: hsla(60, 10%, 94%, 1);
+  --bg-card: hsla(60, 10%, 100%, 0.85);
+  --text: #1a1a17;
+  --text-s: #5a5a52;
+  --text-m: #9a9a90;
+  --accent: #B8860B;
+  --accent-h: #996F08;
+  --accent-light: hsla(43, 83%, 38%, 0.08);
+  --border: hsla(0, 0%, 0%, 0.05);
+  --border-h: hsla(0, 0%, 0%, 0.1);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 25px 60px rgba(0, 0, 0, 0.08);
+  --shadow-glow: 0 0 50px rgba(184, 134, 11, 0.08);
+  --glass: hsla(0, 0%, 100%, 0.7);
+  --glass-b: 16px;
+  --sun: #e8a838;
+  --sun-glow: hsla(38, 79%, 56%, 0.2);
+  --invert: 0;
+}
+
+html.dark {
+  --bg: #000;
+  --bg-alt: #000;
+  --bg-card: rgba(0, 0, 0, 0.6);
+  --text: hsla(60, 10%, 92%, 1);
+  --text-s: hsla(240, 10%, 65%, 1);
+  --text-m: hsla(240, 10%, 40%, 1);
+  --accent: #E8A838;
+  --accent-h: #D49530;
+  --accent-light: hsla(38, 79%, 56%, 0.08);
+  --border: hsla(0, 0%, 100%, 0.06);
+  --border-h: hsla(0, 0%, 100%, 0.12);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 25px 60px rgba(0, 0, 0, 0.8);
+  --shadow-glow: 0 0 50px rgba(232, 168, 56, 0.08);
+  --glass: rgba(0, 0, 0, 0.75);
+  --glass-b: 16px;
+  --sun: #d4d4e0;
+  --sun-glow: hsla(240, 15%, 85%, 0.1);
+  --invert: 1;
+}
+
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* CSS smooth-scroll removed — Lenis owns the easing now. */
+  background: var(--bg);
+  transition: background 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  color: var(--text);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* "clip" prevents horizontal overflow WITHOUT establishing a scroll container,
+     so ScrollTrigger's pin and CSS sticky keep working. "hidden" would break them. */
+  overflow-x: clip;
+  background: var(--bg);
+  transition: color 0.5s, background 0.7s;
+  /* Touch-action: pan-y locks the page to vertical scroll only so a sideways
+     finger flick doesn't trigger browser back-gesture or hijack the Lenis
+     wheel. overscroll-behavior: none kills the iOS rubber-band bounce that
+     would otherwise let users scroll *past* the pinned hero. */
+  touch-action: pan-y;
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: var(--accent-light);
+  color: var(--accent);
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-h);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* ═══════════════════════════════════════════════
+   LAYOUT
+   ═══════════════════════════════════════════════ */
+
+.container-wide {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .container-wide {
+    padding: 0 3rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container-wide {
+    padding: 0 2rem;
+  }
+}
+
+/* Sections — full page, content centered */
+.section-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  padding: 4rem 0;
+}
+
+@media (min-width: 768px) {
+  .section-page {
+    padding: 7rem 0;
+  }
+}
+
+/* Alternating subtle tone — disabled while site runs on pure black */
+.section-tinted {
+  background: transparent;
+}
+
+/* ═══════════════════════════════════════════════
+   SKY / CANVAS CONTAINER
+   ═══════════════════════════════════════════════ */
+.sky-canvas-container {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: #050505;
+}
+
+/* ═══════════════════════════════════════════════
+   SCROLL VIDEO HERO — minimal baseline
+   GSAP ScrollTrigger pins the stage and scrubs video.currentTime
+   over `+=duration * SCROLL_PER_SECOND` pixels of scroll.
+   Content overlays will land on top later.
+   ═══════════════════════════════════════════════ */
+
+.scroll-video-hero {
+  position: relative;
+  width: 100%;
+  background: #000;
+  z-index: 5;
+}
+
+.scroll-video-stage {
+  position: relative;
+  width: 100vw;
+  /* 100svh = the *small* viewport height (excludes mobile chrome). On iOS
+     Safari/Chrome, 100vh = large viewport, so a 100vh pin that latches
+     while the URL bar is shown ends up overflowing once the bar collapses,
+     and the user sees a "jump" when scroll re-stabilises. 100svh stays
+     constant across URL-bar collapse/expand. Falls back to 100vh for
+     browsers that don't know svh. */
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: #000;
+  isolation: isolate;
+  /* Keep paint/layout work confined to the stage during the pinned scroll. */
+  contain: layout paint;
+}
+
+.scroll-video-el {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  background: transparent;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+  z-index: 1;
+  /* Promote each video to its own GPU layer so the opacity crossfade
+     between segments doesn't trigger a full repaint. */
+  will-change: opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  transition: opacity 0.18s linear;
+}
+
+/* Full four-edge frame mask. Transparent in the centre, soft black fade
+   inward from each edge. The bottom-right corner gets an extra radial
+   reinforcement so the baked-in VEO watermark stays fully obscured even when
+   non-black portions of the video (e.g. the laptop bezel in SA2's pre-hold,
+   the warm rim light in SA1) touch any edge.
+
+   Stacked-gradient anatomy (top → bottom paint order, last layer drawn
+   first underneath):
+     • radial @ 100% 100% — opaque black wedge eating the VEO watermark
+     • four linear edge bands — top/bottom/left/right, each fading inward
+       from a strong black at the edge to transparent past the band. Corners
+       naturally darken because two perpendicular bands overlap there. */
+.scroll-video-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    /* Bottom-right watermark wedge — same shape as before, slightly wider so
+       the laptop bezel meets a softer falloff rather than a hard blob. */
+    radial-gradient(ellipse clamp(220px, 24vw, 360px) clamp(100px, 14vh, 170px)
+      at 100% 100%,
+      rgba(0, 0, 0, 0.96) 0%,
+      rgba(0, 0, 0, 0.88) 22%,
+      rgba(0, 0, 0, 0.55) 55%,
+      rgba(0, 0, 0, 0.22) 80%,
+      transparent 100%),
+    /* Top edge */
+    linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.78) 0%,
+      rgba(0, 0, 0, 0.32) 55%,
+      transparent 100%) top / 100% clamp(60px, 9vh, 120px) no-repeat,
+    /* Bottom edge */
+    linear-gradient(to top,
+      rgba(0, 0, 0, 0.78) 0%,
+      rgba(0, 0, 0, 0.32) 55%,
+      transparent 100%) bottom / 100% clamp(60px, 9vh, 120px) no-repeat,
+    /* Left edge */
+    linear-gradient(to right,
+      rgba(0, 0, 0, 0.78) 0%,
+      rgba(0, 0, 0, 0.32) 55%,
+      transparent 100%) left / clamp(56px, 8vw, 140px) 100% no-repeat,
+    /* Right edge */
+    linear-gradient(to left,
+      rgba(0, 0, 0, 0.78) 0%,
+      rgba(0, 0, 0, 0.32) 55%,
+      transparent 100%) right / clamp(56px, 8vw, 140px) 100% no-repeat;
+}
+
+@media (max-width: 767px) {
+  /* Tighter band on phones — the viewport is narrower so a desktop-sized
+     band would eat too much of the subject area. The watermark wedge stays
+     proportional via the clamp() floor. */
+  .scroll-video-frame {
+    background:
+      radial-gradient(ellipse 180px 90px at 100% 100%,
+        rgba(0, 0, 0, 0.96) 0%,
+        rgba(0, 0, 0, 0.86) 28%,
+        rgba(0, 0, 0, 0.5) 62%,
+        transparent 100%),
+      linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.72) 0%,
+        transparent 100%) top / 100% 56px no-repeat,
+      linear-gradient(to top,
+        rgba(0, 0, 0, 0.72) 0%,
+        transparent 100%) bottom / 100% 56px no-repeat,
+      linear-gradient(to right,
+        rgba(0, 0, 0, 0.72) 0%,
+        transparent 100%) left / 44px 100% no-repeat,
+      linear-gradient(to left,
+        rgba(0, 0, 0, 0.72) 0%,
+        transparent 100%) right / 44px 100% no-repeat;
+  }
+}
+
+/* Black-void mask. Opacity is driven from the rAF loop in ScrollVideoHero —
+   ramps in over the last ~1s of segment 2 so the flashlight + Parrot bird
+   baked into the video tail are never seen. Sits above both videos and the
+   watermark; the skills overlay (future) will mount above this. */
+.scroll-video-void {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 3;
+  pointer-events: none;
+  transform: translateZ(0);
+  will-change: opacity;
+}
+
+/* ═══════════════════════════════════════════════
+   HERO INTRO OVERLAY — third-person introduction painted on top of the
+   first video frame. Visible at globalProgress ≈ 0 and dissolves the moment
+   the user starts scrolling, well before the first narration beat appears.
+   Imperative opacity, same store-subscriber pattern as siblings.
+   ═══════════════════════════════════════════════ */
+.hero-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 19; /* below hero-narration (20) so nothing visually overlaps */
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  padding: clamp(2rem, 5vh, 4rem) clamp(1.5rem, 5vw, 4.5rem);
+  will-change: opacity;
+  transition: opacity 280ms ease-out;
+}
+
+.hero-intro__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  max-width: min(46vw, 540px);
+}
+
+.hero-intro__label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.66rem, 0.82vw, 0.76rem);
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: #ffd94d;
+  /* The single accent of amber on the page. No glow — just colour. */
+}
+
+.hero-intro__name {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(2.6rem, 5.4vw, 4.6rem);
+  line-height: 0.96;
+  letter-spacing: -0.02em;
+  color: #f4efe2;
+  margin: 0;
+  /* Tight shadow for legibility on dark areas — NO outer glow that bleeds. */
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
+}
+
+.hero-intro__bio {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1rem, 1.25vw, 1.18rem);
+  line-height: 1.55;
+  color: rgba(232, 226, 210, 0.86);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  margin: 0;
+  max-width: 38ch;
+}
+
+.hero-intro__cv {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.6rem;
+  padding: 0.7rem 1.2rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.72rem, 0.86vw, 0.82rem);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #f4efe2;
+  text-decoration: none;
+  background: rgba(244, 239, 226, 0.04);
+  border: 1px solid rgba(244, 239, 226, 0.35);
+  border-radius: 999px;
+  transition: background 220ms ease, border-color 220ms ease, color 220ms ease,
+    transform 220ms ease;
+  align-self: flex-start;
+}
+.hero-intro__cv:hover,
+.hero-intro__cv:focus-visible {
+  background: rgba(244, 239, 226, 0.10);
+  border-color: rgba(244, 239, 226, 0.7);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+.hero-intro__cv:focus-visible {
+  outline: 2px solid rgba(255, 217, 80, 0.6);
+  outline-offset: 4px;
+}
+.hero-intro__cv svg {
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+/* Right-side scroll hint — anchored to the dark space opposite the intro
+   panel, vertically centred. Vertical stack: small horizontal line on top,
+   rotated label running upward, animated chevron at the bottom. */
+.hero-intro__scroll-hint {
+  position: absolute;
+  right: clamp(1.5rem, 3.5vw, 3rem);
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: rgba(232, 226, 210, 0.6);
+}
+.hero-intro__scroll-line {
+  display: block;
+  width: 1px;
+  height: clamp(36px, 6vh, 60px);
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(232, 226, 210, 0.5)
+  );
+}
+.hero-intro__scroll-label {
+  font-size: clamp(0.66rem, 0.78vw, 0.74rem);
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  /* Rotate so the label reads bottom-to-top against the right edge. */
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+.hero-intro__scroll-hint svg {
+  animation: heroIntroBob 2s ease-in-out infinite;
+}
+
+@keyframes heroIntroBob {
+  0%, 100% {
+    transform: translateY(-1px);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateY(3px);
+    opacity: 1;
+  }
+}
+
+/* Edge vignette — pushes the corners of the video frame toward pure black so
+   the warm rim-lighting in the original footage doesn't read as a yellow
+   wash bleeding into the page. Pure black radial mask, no colour added. */
+.scroll-video-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    radial-gradient(
+      ellipse at center,
+      transparent 35%,
+      rgba(0, 0, 0, 0.45) 78%,
+      rgba(0, 0, 0, 0.85) 100%
+    );
+}
+
+@media (max-width: 768px) {
+  .hero-intro {
+    align-items: flex-end;
+    /* Sit above the iOS home-indicator safe area so the CV button is always
+       tappable; falls back to the original bottom padding on Android/Chrome. */
+    padding-bottom: max(clamp(2rem, 7vh, 4rem), env(safe-area-inset-bottom, 0));
+    padding-left: clamp(1rem, 5vw, 2rem);
+    padding-right: clamp(1rem, 5vw, 2rem);
+  }
+  .hero-intro__panel {
+    max-width: 92vw;
+    gap: 0.9rem;
+  }
+  .hero-intro__label {
+    font-size: 0.66rem;
+    letter-spacing: 0.36em;
+  }
+  .hero-intro__name {
+    font-size: clamp(2.2rem, 9vw, 3.4rem);
+  }
+  .hero-intro__bio {
+    font-size: clamp(0.95rem, 3.4vw, 1.05rem);
+    max-width: 32ch;
+  }
+  .hero-intro__cv {
+    /* Larger tap target on touch — 44x44 is the Apple HIG floor. */
+    padding: 0.85rem 1.3rem;
+    font-size: 0.72rem;
+  }
+  /* Right-side scroll hint would collide with the silhouette at narrow
+     viewports — scrolling on touch is obvious enough without it. */
+  .hero-intro__scroll-hint {
+    display: none;
+  }
+}
+
+/* Compact phones — keep the intro from being squashed by the silhouette
+   while still keeping the panel readable. */
+@media (max-width: 420px) {
+  .hero-intro__panel {
+    gap: 0.7rem;
+  }
+  .hero-intro__name {
+    font-size: clamp(2rem, 10vw, 2.8rem);
+    line-height: 0.98;
+  }
+  .hero-intro__bio {
+    font-size: 0.92rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-intro__scroll-hint svg {
+    animation: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   HERO NARRATION — third-person caption overlay
+   Sits in a fixed-position right-side column anchored over the pinned
+   scroll-video stage. Beat opacity is set imperatively by HeroNarration.jsx
+   from the scrollVideoStore — no React re-renders during scroll.
+   ═══════════════════════════════════════════════ */
+.hero-narration {
+  position: fixed;
+  inset: 0;
+  /* Above `<main>` (z-10 from Tailwind) so beats render over the video stage,
+     but below any future modal/menu layers. */
+  z-index: 20;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* Two side columns hug the left and right "color areas" of the video frame,
+     leaving the centred subject clear. */
+  padding: 0 clamp(1.25rem, 4vw, 3.5rem);
+}
+
+.hero-narration__column {
+  position: relative;
+  width: min(28vw, 340px);
+  /* Stack each beat in the same absolute slot so they crossfade in place
+     instead of pushing each other around. */
+  height: clamp(280px, 42vh, 380px);
+}
+
+.hero-narration__column--right {
+  width: min(34vw, 420px);
+}
+
+.hero-narration__beat {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.85rem;
+  /* All paint stays inside the layer; opacity + transform are set inline. */
+  will-change: opacity, transform;
+  transition: opacity 220ms ease-out, transform 280ms ease-out;
+}
+
+/* Stack — two project cards rendered one above the other inside a single
+   beat-side (used by SA2 where Clavis/OnlineCompiler sit above
+   PIIcasso/SprayMaster). Justify-center so the pair reads centred in the
+   column even though they're vertically stacked. */
+.hero-narration__stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.4rem;
+  height: 100%;
+}
+.hero-narration__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.hero-narration__beat--left {
+  text-align: left;
+}
+
+.hero-narration__beat--right {
+  text-align: right;
+}
+
+.hero-narration__eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.7rem, 0.9vw, 0.78rem);
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #ffe07a;
+  text-shadow: 0 0 18px rgba(255, 217, 80, 0.35);
+}
+
+.hero-narration__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(1.35rem, 2.1vw, 2rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: #ffd94d;
+  text-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.9),
+    0 0 24px rgba(255, 200, 60, 0.22);
+}
+
+.hero-narration__title--link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  color: #ffd94d;
+  text-decoration: none;
+  position: relative;
+  /* Underline rendered as a pseudo-element so it animates without shifting
+     the title's baseline on hover. */
+}
+
+.hero-narration__title--link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.35;
+  transform: scaleX(0.4);
+  transform-origin: left center;
+  transition: transform 220ms ease-out, opacity 220ms ease-out;
+}
+
+.hero-narration__title--link:hover::after,
+.hero-narration__title--link:focus-visible::after {
+  transform: scaleX(1);
+  opacity: 0.9;
+}
+
+.hero-narration__title--link:hover,
+.hero-narration__title--link:focus-visible {
+  color: #fff1a8;
+}
+
+.hero-narration__title--link:focus-visible {
+  outline: 2px solid rgba(255, 217, 80, 0.7);
+  outline-offset: 6px;
+  border-radius: 2px;
+}
+
+.hero-narration__title-arrow {
+  font-size: 0.65em;
+  font-weight: 600;
+  transform: translateY(-0.12em);
+  transition: transform 220ms ease-out;
+}
+
+.hero-narration__title--link:hover .hero-narration__title-arrow {
+  transform: translate(0.15em, -0.25em);
+}
+
+.hero-narration__body {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.02rem, 1.35vw, 1.22rem);
+  line-height: 1.55;
+  letter-spacing: 0.005em;
+  color: #ffd94d;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.85),
+    0 0 22px rgba(255, 200, 60, 0.18);
+}
+
+@media (max-width: 1024px) {
+  .hero-narration {
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(1.5rem, 5vh, 3rem) clamp(1rem, 4vw, 2rem);
+  }
+
+  .hero-narration__column,
+  .hero-narration__column--right {
+    width: min(92vw, 560px);
+    /* Bumped from 120-180px → 160-240px. SA2's "two-card stack" beat shows
+       four full project blurbs (eyebrow + title + body) split across the
+       two columns; the old 180px ceiling clipped the bottom card on phones. */
+    height: clamp(160px, 26vh, 240px);
+  }
+
+  .hero-narration__beat--left,
+  .hero-narration__beat--right {
+    text-align: center;
+  }
+
+  .hero-narration__stack {
+    /* Tighter spacing on phones — the two stacked project cards otherwise
+       eat the entire column and the second card scrolls off-frame. */
+    gap: 0.85rem;
+  }
+
+  .hero-narration__body {
+    font-size: clamp(0.9rem, 2.3vw, 1.05rem);
+    line-height: 1.45;
+  }
+
+  .hero-narration__title {
+    font-size: clamp(1.15rem, 4vw, 1.5rem);
+  }
+
+  .hero-narration__eyebrow {
+    font-size: clamp(0.62rem, 2.4vw, 0.72rem);
+    letter-spacing: 0.28em;
+  }
+}
+
+/* Portrait phones — the dual-column narration that stacks at <=1024px gets
+   even tighter so the four-card SA2 beat fits a 360-414px viewport without
+   clipping. Body switches to 3 lines max with ellipsis as a last-resort. */
+@media (max-width: 480px) {
+  .hero-narration {
+    padding: clamp(0.9rem, 3.5vh, 1.8rem) 0.75rem;
+  }
+
+  .hero-narration__column,
+  .hero-narration__column--right {
+    height: clamp(150px, 24vh, 210px);
+  }
+
+  .hero-narration__stack {
+    gap: 0.65rem;
+  }
+
+  .hero-narration__body {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+
+  .hero-narration__title {
+    font-size: 1.1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-narration__beat {
+    transition: opacity 80ms linear;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SKILLS REVEAL — "inside the brain" overlay
+   Sits above the void mask (which stays opaque through SA3's pre-hold) and
+   reveals each skill group one-by-one against pure black. Imperative
+   opacity is set per group by SkillsReveal.jsx from scrollVideoStore.
+   ═══════════════════════════════════════════════ */
+.skills-reveal {
+  position: fixed;
+  inset: 0;
+  /* Same z-index as hero-narration — they never overlap in time. */
+  z-index: 20;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2rem, 5vh, 4rem) clamp(1.5rem, 6vw, 5rem);
+}
+
+/* Subtle radial neural-glow backdrop — sits just below the chips to give
+   the void some depth, like a cross-section of a brain lit by interior
+   pulses rather than a flat black. */
+.skills-reveal::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(255, 200, 60, 0.06), transparent 70%),
+    radial-gradient(ellipse 40% 35% at 30% 40%, rgba(232, 168, 56, 0.04), transparent 70%),
+    radial-gradient(ellipse 35% 30% at 70% 60%, rgba(255, 217, 80, 0.04), transparent 70%);
+  pointer-events: none;
+}
+
+.skills-reveal__inner {
+  position: relative;
+  width: min(960px, 92vw);
+  /* Each group is absolutely positioned at the same slot so they crossfade
+     in place — only one is visible at a time. Height matches the largest
+     group so the layout never jumps. */
+  height: clamp(280px, 52vh, 460px);
+}
+
+.skills-reveal__group {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 2.2vh, 1.75rem);
+  will-change: opacity, transform;
+  transition: opacity 220ms ease-out, transform 280ms ease-out;
+  text-align: center;
+}
+
+.skills-reveal__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  letter-spacing: -0.01em;
+  color: #ffd94d;
+  text-shadow:
+    0 0 28px rgba(255, 200, 60, 0.35),
+    0 2px 6px rgba(0, 0, 0, 0.9);
+  margin: 0;
+}
+
+.skills-reveal__chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(0.5rem, 1vw, 0.85rem) clamp(0.6rem, 1.1vw, 0.95rem);
+  max-width: 100%;
+}
+
+.skill-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.5em 0.95em;
+  border-radius: 999px;
+  background: rgba(255, 217, 80, 0.06);
+  border: 1px solid rgba(255, 217, 80, 0.28);
+  color: #ffe07a;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.78rem, 1vw, 0.92rem);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  box-shadow: inset 0 0 18px rgba(255, 200, 60, 0.04);
+}
+
+/* backdrop-filter scoped to fine pointers (desktop). Mobile WebKit treats
+   each blurred chip as a full-screen offscreen render; with 60+ chips in
+   the DOM at once that's the dominant scroll-frame cost on phones. */
+@media (hover: hover) and (pointer: fine) {
+  .skill-chip {
+    backdrop-filter: blur(2px);
+  }
+}
+
+.skill-chip--text {
+  /* Slightly different treatment for icon-less concept chips so they read
+     as a "technique" tag rather than a missing-logo bug. */
+  background: rgba(255, 217, 80, 0.04);
+  border-style: dashed;
+  border-color: rgba(255, 217, 80, 0.22);
+  color: #ffd46b;
+}
+
+.skill-chip__icon {
+  width: clamp(18px, 1.6vw, 22px);
+  height: clamp(18px, 1.6vw, 22px);
+  object-fit: contain;
+  /* Some icons (devicon SVGs, simpleicons) are black or dark — lift them so
+     they read on the void-mask black. */
+  filter: drop-shadow(0 0 4px rgba(255, 200, 60, 0.25));
+}
+
+.skill-chip__label {
+  line-height: 1;
+}
+
+@media (max-width: 720px) {
+  .skills-reveal {
+    padding: clamp(1.5rem, 4vh, 3rem) 1rem;
+  }
+  .skills-reveal__inner {
+    /* Tall enough for the 13-chip Exploitation group to wrap into 4-5 rows
+       without overflowing the void. */
+    height: clamp(380px, 64vh, 540px);
+  }
+  .skills-reveal__title {
+    font-size: clamp(1.4rem, 5.5vw, 1.9rem);
+  }
+  .skills-reveal__chips {
+    gap: 0.45rem 0.5rem;
+  }
+  .skill-chip {
+    font-size: 0.74rem;
+    padding: 0.4em 0.75em;
+  }
+}
+
+@media (max-width: 420px) {
+  .skill-chip {
+    font-size: 0.7rem;
+    padding: 0.38em 0.7em;
+  }
+  .skill-chip__icon {
+    width: 14px;
+    height: 14px;
+  }
+  .skills-reveal__title {
+    font-size: 1.35rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skills-reveal__group {
+    transition: opacity 80ms linear;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   HERO FOOTER — end-of-page overlay
+   OSCP "Next Move" centred above two contact columns (LinkedIn/GitHub left,
+   Email/Phone right). Fades in after the SA3 face-centred reveal and stays
+   pinned through the end of the scroll.
+   ═══════════════════════════════════════════════ */
+.hero-footer {
+  position: fixed;
+  inset: 0;
+  z-index: 22;
+  pointer-events: none;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  padding: clamp(1rem, 3vh, 2.25rem) clamp(1.25rem, 3.5vw, 3rem)
+    clamp(1.25rem, 3vh, 2.25rem);
+  gap: clamp(1rem, 3vw, 2.5rem);
+  will-change: opacity, transform;
+  transition: opacity 240ms ease-out, transform 300ms ease-out;
+}
+
+/* Each column hugs one side of the viewport and justifies its content
+   top→bottom inside the dark "color area" beside the face. */
+.hero-footer__column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: clamp(220px, 26vw, 320px);
+  max-width: 32vw;
+  gap: 1.25rem;
+}
+
+.hero-footer__column--left {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.hero-footer__column--right {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.hero-footer__heading,
+.hero-footer__brief {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+/* Certification roadmap — wraps within the side column so a narrow viewport
+   doesn't push the chips into the centre face area. */
+.hero-footer__path {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.45rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.72rem, 0.92vw, 0.83rem);
+  letter-spacing: 0.04em;
+}
+
+.hero-footer__path-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.hero-footer__path-code {
+  padding: 0.32em 0.6em;
+  border-radius: 4px;
+  background: rgba(255, 217, 80, 0.06);
+  border: 1px solid rgba(255, 217, 80, 0.30);
+  color: #ffe07a;
+  font-weight: 600;
+  white-space: nowrap;
+  text-shadow: 0 0 12px rgba(255, 200, 60, 0.18);
+}
+
+/* Target (active goal) — brighter, with a soft glow, to read as "currently
+   preparing for this exam". */
+.hero-footer__path-item--target .hero-footer__path-code {
+  background: rgba(255, 217, 80, 0.18);
+  border-color: rgba(255, 217, 80, 0.62);
+  color: #fff1a8;
+  box-shadow: 0 0 18px rgba(255, 200, 60, 0.28);
+}
+
+/* Apex (final cert) — dashed border to signal "long-term goal, not next". */
+.hero-footer__path-item--apex .hero-footer__path-code {
+  border-style: dashed;
+  border-color: rgba(255, 217, 80, 0.4);
+}
+
+.hero-footer__path-arrow {
+  color: rgba(255, 217, 80, 0.55);
+  font-size: 0.95em;
+  line-height: 1;
+}
+
+.hero-footer__eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.7rem, 0.9vw, 0.78rem);
+  font-weight: 600;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: #ffe07a;
+  text-shadow: 0 0 18px rgba(255, 217, 80, 0.35);
+}
+
+.hero-footer__title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(1.05rem, 1.4vw, 1.4rem);
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: #ffd94d;
+  text-shadow:
+    0 0 22px rgba(255, 200, 60, 0.32),
+    0 2px 6px rgba(0, 0, 0, 0.85);
+  margin: 0;
+}
+
+.hero-footer__body {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(0.85rem, 1vw, 0.98rem);
+  line-height: 1.5;
+  color: #ffd94d;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.9),
+    0 0 22px rgba(255, 200, 60, 0.15);
+  margin: 0;
+}
+
+.hero-footer__contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  width: 100%;
+}
+
+.hero-footer__column--left .hero-footer__contacts {
+  align-items: flex-start;
+}
+
+.hero-footer__column--right .hero-footer__contacts {
+  align-items: flex-end;
+}
+
+.hero-footer__contact {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.55rem 0.9rem;
+  border-radius: 6px;
+  background: rgba(255, 217, 80, 0.04);
+  border: 1px solid rgba(255, 217, 80, 0.22);
+  color: #ffd94d;
+  text-decoration: none;
+  transition: background 200ms, border-color 200ms, transform 200ms;
+}
+@media (hover: hover) and (pointer: fine) {
+  .hero-footer__contact { backdrop-filter: blur(2px); }
+}
+
+.hero-footer__contact:hover,
+.hero-footer__contact:focus-visible {
+  background: rgba(255, 217, 80, 0.10);
+  border-color: rgba(255, 217, 80, 0.48);
+  transform: translateY(-1px);
+}
+
+.hero-footer__contact:focus-visible {
+  outline: 2px solid rgba(255, 217, 80, 0.7);
+  outline-offset: 4px;
+}
+
+.hero-footer__contact-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #ffe07a;
+  opacity: 0.85;
+}
+
+.hero-footer__contact-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.82rem, 0.95vw, 0.92rem);
+  font-weight: 500;
+  color: #ffd94d;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+}
+
+.hero-footer__contact-arrow {
+  font-size: 0.75em;
+  opacity: 0.6;
+  transition: transform 200ms, opacity 200ms;
+}
+
+.hero-footer__contact:hover .hero-footer__contact-arrow {
+  transform: translate(0.15em, -0.2em);
+  opacity: 1;
+}
+
+@media (max-width: 860px) {
+  .hero-footer {
+    flex-direction: column;
+    align-items: stretch;
+    /* Honour iOS safe-area-inset-bottom so links don't sit under the home
+       indicator on notched devices during the SA3 tail hold. */
+    padding: max(0.75rem, env(safe-area-inset-top, 0)) 0.85rem
+      max(1rem, env(safe-area-inset-bottom, 0));
+    gap: 0.75rem;
+    /* Allow internal scroll if four contacts + cert roadmap + briefing don't
+       fit; the footer pins itself during SA3 tail, so an internal scrollbar
+       is preferable to clipping. */
+    overflow-y: auto;
+  }
+  .hero-footer__column,
+  .hero-footer__column--left,
+  .hero-footer__column--right {
+    width: 100%;
+    max-width: 100%;
+    align-items: center;
+    text-align: center;
+    /* On mobile each column shrinks tight to its content; no need for the
+     desktop column-justify "top header, bottom contacts" geometry since the
+     viewport is vertical anyway. */
+    justify-content: flex-start;
+    gap: 0.6rem;
+  }
+  .hero-footer__column--right .hero-footer__contacts,
+  .hero-footer__column--left .hero-footer__contacts {
+    align-items: center;
+  }
+  .hero-footer__contact { align-items: center; min-width: 220px; }
+  .hero-footer__heading, .hero-footer__brief { gap: 0.35rem; }
+  .hero-footer__path { justify-content: center; gap: 0.3rem 0.4rem; }
+  .hero-footer__title { font-size: clamp(0.98rem, 4vw, 1.2rem); }
+  .hero-footer__body { font-size: clamp(0.82rem, 3.2vw, 0.95rem); line-height: 1.45; }
+  .hero-footer__contacts { gap: 0.45rem; }
+  .hero-footer__contact { padding: 0.75rem 1rem; min-height: 44px; }
+  .hero-footer__contact-value { font-size: 0.85rem; }
+}
+
+/* Compact phones — drop the cert roadmap to its smallest legible size and
+   compress contact card padding so all four links fit one viewport. */
+@media (max-width: 420px) {
+  .hero-footer__path { font-size: 0.7rem; }
+  .hero-footer__path-code { padding: 0.28em 0.5em; }
+  .hero-footer__contact { padding: 0.65rem 0.85rem; min-width: 200px; }
+  .hero-footer__contact-label { font-size: 0.6rem; letter-spacing: 0.24em; }
+  .hero-footer__contact-value { font-size: 0.8rem; }
+}
+
+/* ═══════════════════════════════════════════════
+   MOBILE PERFORMANCE — paint-cost reductions
+   On phones the scroll-video scrub already saturates the GPU. Every
+   backdrop-filter blur, multi-layer text-shadow, and willChange'd hidden
+   beat adds a compositor layer that the device repaints during scroll.
+   These overrides trim 60+ paint sources without changing the cinematic
+   on a device where the cost is affordable (desktop).
+   `pointer: coarse` catches touch devices regardless of CSS-pixel width
+   (covers tablets in landscape). `max-width: 1024px` covers desktop
+   browsers manually resized to a phone-shaped window.
+   ═══════════════════════════════════════════════ */
+@media (pointer: coarse), (max-width: 1024px) {
+  /* (backdrop-filter is scoped to desktop via `@media (hover) and (pointer:
+     fine)` on the base rules — no override needed here.) */
+
+  /* Multi-layer text-shadows with large blur radius force the rasteriser
+     to re-paint each visible character every scroll frame. Trim every
+     overlay text to a single hard shadow that still keeps legibility on
+     the dark video. */
+  .hero-narration__title,
+  .hero-narration__body,
+  .hero-narration__eyebrow,
+  .hero-intro__name,
+  .hero-intro__bio,
+  .skills-reveal__title,
+  .hero-footer__title,
+  .hero-footer__body,
+  .hero-footer__eyebrow {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+  }
+
+  /* The neural-glow radial backdrop on .skills-reveal::before is three
+     stacked radial gradients animating beneath the chips. Imperceptible
+     against pure-black video and pure CPU cost. */
+  .skills-reveal::before {
+    background: none;
+  }
+
+  /* Hidden beats / groups / footer all sit at opacity 0 with
+     `will-change: opacity, transform`. will-change keeps them in their
+     own compositor layer even when invisible — on a phone with 7 skill
+     groups, 5 narration beats, and a footer that's 7+ extra layers.
+     Drop will-change at rest; the imperative writes are short bursts
+     and the perf gain dominates the brief promote-on-write cost. */
+  .hero-narration__beat,
+  .skills-reveal__group,
+  .hero-footer {
+    will-change: auto;
+  }
+
+  /* Edge vignette gradient on the stage is a full-screen radial paint
+     that re-rasterises during scroll on some mobile GPUs. Drop the inner
+     transparent band so the rasteriser caches a single layer. */
+  .scroll-video-stage::after {
+    background: radial-gradient(
+      ellipse at center,
+      transparent 50%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
+  }
+
+  /* Crossfade transition on video opacity is a per-frame composite cost.
+     On mobile the segments change rarely (3 times in the entire
+     experience), so a near-instant swap is fine and saves the per-frame
+     interpolation. */
+  .scroll-video-el {
+    transition: opacity 0.05s linear;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════ */
+
+.heading-hero {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+/* ═══════════════════════════════════════════════
+   CINEMA TYPOGRAPHY — Westworld-style title
+   ═══════════════════════════════════════════════ */
+.cinema-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3.2rem, 9vw, 7.5rem);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  color: var(--text);
+  text-shadow:
+    0 0 40px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cinema-heading-accent {
+  color: var(--accent);
+  text-shadow:
+    0 0 36px rgba(232, 168, 56, 0.55),
+    0 0 60px rgba(232, 168, 56, 0.25),
+    0 2px 6px rgba(0, 0, 0, 0.4);
+  font-style: italic;
+}
+
+.cinema-title-wrap {
+  display: inline-block;
+}
+
+.heading-section {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.heading-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+/* Section label — renamed to avoid Tailwind's "overline" utility conflict */
+.label-overline {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ═══════════════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════════════ */
+
+.btn-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.btn-main:hover::before {
+  opacity: 1;
+}
+
+.btn-main:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 16px 40px rgba(184, 134, 11, 0.30), 0 0 0 1px rgba(184, 134, 11, 0.20);
+}
+
+.btn-main:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1.5px solid var(--border-h);
+  border-radius: 60px;
+  cursor: pointer;
+  transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-outline:active {
+  transform: translateY(-1px);
+}
+
+/* ═══════════════════════════════════════════════
+   TAG PILLS
+   ═══════════════════════════════════════════════ */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 99px;
+  background: var(--accent-light);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-s);
+  transition: all 0.35s ease;
+  border: 1px solid transparent;
+}
+
+.pill:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* ═══════════════════════════════════════════════
+   DIVIDERS
+   ═══════════════════════════════════════════════ */
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border-h) 50%, transparent 100%);
+}
+
+/* ═══════════════════════════════════════════════
+   SKILL BAR
+   ═══════════════════════════════════════════════ */
+
+.skill-row-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-light);
+  border: 1px solid var(--border);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.skill-row-icon img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+/* ═══════════════════════════════════════════════
+   MARQUEE
+   ═══════════════════════════════════════════════ */
+
+.marquee-track {
+  display: flex;
+  gap: 2rem;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+/* ═══════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+@keyframes pulse-soft {
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes scan {
+  0% {
+    top: -10%;
+  }
+
+  100% {
+    top: 110%;
+  }
+}
+
+@keyframes float-y {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.float-anim {
+  animation: float-y 5s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════
+   CINEMATIC SCENE — keyframes for layered bg
+   ═══════════════════════════════════════════════ */
+
+@keyframes aurora1 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  33%      { transform: translate(-8%, 6%) scale(1.10); }
+  66%      { transform: translate(7%, -7%) scale(0.92); }
+}
+@keyframes aurora2 {
+  0%, 100% { transform: translate(0%, 0%) scale(1) rotate(0deg); }
+  33%      { transform: translate(12%, -8%) scale(0.95) rotate(10deg); }
+  66%      { transform: translate(-10%, 10%) scale(1.06) rotate(-8deg); }
+}
+@keyframes aurora3 {
+  0%, 100% { transform: translate(0%, 0%) rotate(0deg) scale(1); }
+  50%      { transform: translate(8%, -12%) rotate(18deg) scale(1.08); }
+}
+
+@keyframes orbDrift1 {
+  0%, 100% { transform: translate(0vw, 0vh) scale(1); }
+  50%      { transform: translate(18vw, -12vh) scale(1.10); }
+}
+@keyframes orbDrift2 {
+  0%, 100% { transform: translate(0vw, 0vh) scale(1); }
+  50%      { transform: translate(-15vw, 14vh) scale(0.92); }
+}
+@keyframes orbDrift3 {
+  0%, 100% { transform: translate(0vw, 0vh) scale(1); }
+  50%      { transform: translate(12vw, 16vh) scale(1.08); }
+}
+
+@keyframes scanSweep {
+  0%   { transform: translateY(-50vh); }
+  100% { transform: translateY(150vh); }
+}
+
+@keyframes spinSlow {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spinReverse {
+  0%   { transform: scale(0.78) rotate(0deg); }
+  100% { transform: scale(0.78) rotate(-360deg); }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.85); }
+  50%      { opacity: 1;    transform: scale(1.15); }
+}
+
+@keyframes grainShift {
+  0%   { transform: translate(0%, 0%); }
+  25%  { transform: translate(-1.5%, 1%); }
+  50%  { transform: translate(1.5%, -1%); }
+  75%  { transform: translate(-1%, -1.5%); }
+  100% { transform: translate(0%, 0%); }
+}
+
+/* ═══════════════════════════════════════════════
+   FLOATING PORTRAIT — keyframes
+   ═══════════════════════════════════════════════ */
+
+@keyframes halo {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.10); }
+}
+
+@keyframes rotateBorder {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes photoScan {
+  0%   { top: -3%; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 103%; opacity: 0; }
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.5; transform: translateX(-15%); }
+  50%      { opacity: 1;   transform: translateX(15%); }
+}
+
+@keyframes framePulse {
+  0%, 100% {
+    box-shadow:
+      0 0 30px rgba(232, 168, 56, 0.45),
+      0 0 60px rgba(232, 168, 56, 0.25),
+      inset 0 0 30px rgba(232, 168, 56, 0.12);
+  }
+  50% {
+    box-shadow:
+      0 0 50px rgba(232, 168, 56, 0.75),
+      0 0 100px rgba(232, 168, 56, 0.35),
+      inset 0 0 40px rgba(232, 168, 56, 0.20);
+  }
+}
+
+.pulse-dot {
+  animation: pulse-soft 2.5s ease-in-out infinite;
+}
+
+/* Parallax image overlay */
+.img-fade-bottom {
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+
+.img-fade-all {
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at center, black 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 80% at center, black 40%, transparent 100%);
+}
+
+/* Dark mode inversion for dark SVGs */
+html.dark .invert-dark {
+  filter: invert(1) brightness(1.5);
+}
+
+/* ═══════════════════════════════════════════════
+   MOBILE OPTIMIZATIONS
+   ═══════════════════════════════════════════════ */
+
+@media (min-width: 768px) {
+  .btn-main {
+    padding: 16px 36px;
+    gap: 10px;
+    font-size: 14px;
+  }
+
+  .btn-outline {
+    padding: 16px 36px;
+    gap: 10px;
+    font-size: 14px;
+  }
+}
+
+/* Prevent horizontal overflow on mobile */
+@media (max-width: 767px) {
+
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .container-wide {
+    padding: 0 1.25rem;
+  }
+
+  .heading-hero {
+    font-size: clamp(2.4rem, 8vw, 3.5rem);
+    letter-spacing: -0.02em;
+  }
+
+  .heading-section {
+    font-size: clamp(1.8rem, 7vw, 2.6rem);
+  }
+
+  .heading-sub {
+    font-size: clamp(1rem, 4vw, 1.25rem);
+  }
+
+  /* Reduce excessive vertical spacing on mobile */
+  .section-page {
+    min-height: auto;
+  }
+
+  /* Touch-friendly tap targets */
+  .pill {
+    padding: 6px 14px;
+    font-size: 11px;
+  }
+}
+/* ═══════════════════════════════════════════════
+   PRELOADER — full-screen overlay while video 1 buffers
+   ═══════════════════════════════════════════════ */
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: #050505;
+  color: var(--text, #e8e6df);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  transition: opacity 500ms ease-out;
+  opacity: 1;
+}
+.preloader--fading { opacity: 0; pointer-events: none; }
+.preloader__inner {
+  width: min(420px, 80vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.preloader__eyebrow {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: hsla(240, 8%, 55%, 1);
+}
+.preloader__brand {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 600;
+  color: var(--accent, #E8A838);
+  letter-spacing: 0.01em;
+}
+.preloader__bar {
+  width: 100%;
+  height: 2px;
+  background: hsla(240, 8%, 18%, 1);
+  overflow: hidden;
+  border-radius: 1px;
+}
+.preloader__bar-fill {
+  width: 100%;
+  height: 100%;
+  background: var(--accent, #E8A838);
+  transform-origin: left center;
+  transition: transform 120ms linear;
+}
+.preloader__pct {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  color: hsla(240, 8%, 55%, 1);
+  letter-spacing: 0.18em;
+}
+
+/* ═══════════════════════════════════════════════
+   QUICK NAV RAIL — fixed vertical chapter chips
+   ═══════════════════════════════════════════════ */
+.quick-nav {
+  position: fixed;
+  top: 50%;
+  right: 24px;
+  transform: translateY(-50%);
+  z-index: 60;
+  opacity: 0;
+  transition: opacity 480ms ease-out;
+  pointer-events: none;
+}
+.quick-nav--visible { opacity: 1; pointer-events: auto; }
+.quick-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 14px 8px;
+  /* Solid 70% on mobile (no blur); desktop adds the blur for the glass look. */
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid hsla(240, 8%, 22%, 1);
+  border-radius: 999px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .quick-nav__list {
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+.quick-nav__item { margin: 0; }
+.quick-nav__btn {
+  background: transparent;
+  border: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: hsla(240, 8%, 60%, 1);
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  transition: color 200ms ease, background 200ms ease;
+}
+.quick-nav__btn:hover { color: var(--accent, #E8A838); }
+.quick-nav__btn--active {
+  color: var(--accent, #E8A838);
+  background: hsla(38, 79%, 56%, 0.08);
+}
+.quick-nav__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px transparent;
+  transition: box-shadow 200ms ease;
+}
+.quick-nav__btn--active .quick-nav__dot {
+  box-shadow: 0 0 0 3px hsla(38, 79%, 56%, 0.18);
+}
+.quick-nav__label {
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  transition: opacity 220ms ease, max-width 220ms ease;
+  white-space: nowrap;
+}
+.quick-nav:hover .quick-nav__label,
+.quick-nav__btn--active .quick-nav__label,
+.quick-nav__btn:focus-visible .quick-nav__label {
+  opacity: 1;
+  max-width: 140px;
+}
+@media (max-width: 768px) {
+  .quick-nav { right: 12px; }
+  .quick-nav__btn { padding: 8px; }
+  .quick-nav__label,
+  .quick-nav:hover .quick-nav__label,
+  .quick-nav__btn--active .quick-nav__label { opacity: 0; max-width: 0; }
+}
+
+/* ═══════════════════════════════════════════════
+   RESUME CTA — accent variant of hero-footer__contact
+   ═══════════════════════════════════════════════ */
+.hero-footer__contact--cta .hero-footer__contact-value {
+  color: var(--accent, #E8A838);
+  font-weight: 600;
+}
+
+/* ═══════════════════════════════════════════════
+   REDUCED-MOTION HERO — static vertical fallback
+   ═══════════════════════════════════════════════ */
+.rmh {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 56px 24px 96px;
+  color: var(--text, #e8e6df);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  line-height: 1.6;
+}
+.rmh-header { margin-bottom: 56px; }
+.rmh-eyebrow {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: hsla(240, 8%, 55%, 1);
+  margin-bottom: 12px;
+}
+.rmh-h1 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 700;
+  line-height: 1.05;
+  margin: 0 0 16px;
+  color: var(--accent, #E8A838);
+}
+.rmh-h2 {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: clamp(24px, 3.4vw, 32px);
+  font-weight: 600;
+  margin: 0 0 24px;
+  color: var(--text, #e8e6df);
+}
+.rmh-h3 {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent, #E8A838);
+  margin: 24px 0 12px;
+}
+.rmh-lede { color: hsla(240, 10%, 75%, 1); font-size: 17px; max-width: 60ch; }
+.rmh-section { margin-bottom: 56px; }
+.rmh-beat { display: grid; gap: 20px; margin-bottom: 24px; }
+@media (min-width: 720px) { .rmh-beat { grid-template-columns: 1fr 1fr; } }
+.rmh-card {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid hsla(240, 8%, 18%, 1);
+  border-radius: 12px;
+}
+.rmh-title {
+  font-family: var(--font-serif, Georgia, serif);
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.rmh-title--link { color: var(--accent, #E8A838); text-decoration: none; }
+.rmh-title--link:hover { text-decoration: underline; }
+.rmh-body { color: hsla(240, 10%, 72%, 1); margin: 0; }
+.rmh-group { margin-bottom: 28px; }
+.rmh-chips { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.rmh-chip {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid hsla(240, 8%, 22%, 1);
+  background: rgba(255, 255, 255, 0.02);
+  color: hsla(240, 10%, 75%, 1);
+}
+.rmh-footer { border-top: 1px solid hsla(240, 8%, 18%, 1); padding-top: 40px; }
+.rmh-path {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.rmh-path-item {
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid hsla(240, 8%, 22%, 1);
+  color: hsla(240, 10%, 70%, 1);
+}
+.rmh-path-item--target {
+  border-color: var(--accent, #E8A838);
+  color: var(--accent, #E8A838);
+  background: hsla(38, 79%, 56%, 0.08);
+}
+.rmh-path-item--apex {
+  border-style: dashed;
+}
+.rmh-contacts { display: grid; gap: 12px; grid-template-columns: 1fr; }
+@media (min-width: 600px) { .rmh-contacts { grid-template-columns: 1fr 1fr; } }
+.rmh-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid hsla(240, 8%, 18%, 1);
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 200ms ease, background 200ms ease;
+}
+.rmh-contact:hover { border-color: var(--accent, #E8A838); background: hsla(38, 79%, 56%, 0.05); }
+.rmh-contact-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: hsla(240, 8%, 55%, 1);
+}
+.rmh-contact-value { color: var(--text, #e8e6df); font-size: 15px; }
+.rmh-contact--cta { border-color: var(--accent, #E8A838); background: hsla(38, 79%, 56%, 0.06); }
+.rmh-contact--cta .rmh-contact-value { color: var(--accent, #E8A838); font-weight: 600; }
+
+/* Section-divider stills. Replace the scroll-pinned mp4 segments with three
+   pre-rendered images so mobile decoders stay idle. Aspect ratio matches the
+   source video (16:9-ish) and the image is masked at top/bottom to fade into
+   the page background, mimicking the cinematic stage's edge vignette. */
+.rmh-still {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: center;
+  margin: 32px auto;
+  border-radius: 14px;
+  border: 1px solid hsla(240, 8%, 18%, 1);
+  -webkit-mask-image: linear-gradient(to bottom,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%);
+  mask-image: linear-gradient(to bottom,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%);
+}
